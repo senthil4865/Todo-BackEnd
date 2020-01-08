@@ -11,7 +11,7 @@ const Auth = mongoose.model('Auth')
 const emailLib = require('../libs/emailLib');
 const User=require('../models/User');
 
-const applicationUrl = 'http://senthilkumars.com/user'
+const applicationUrl = 'http://localhost:4200.com/user'
 
 let signUpFunction = (req, res) => {
 
@@ -37,7 +37,7 @@ let signUpFunction = (req, res) => {
 
     let createUser = () => { 
         return new Promise((resolve, reject) => {
-            User.findOne({ email: req.body.email })
+            User.findOne({ $and : [{email: req.body.email} ,{emailVerified:'Yes' }] })
                 .exec((err, retrievedUserDetails) => {
                     if (err) {
                         logger.error(err.message, 'userController: signUpFunction-createUser', 10)
@@ -335,7 +335,7 @@ let logout = (req, res) => {
 }
 
 let getAllUser = (req, res) => {
-    User.find({ })
+    User.find({emailVerified:'Yes'})
         .select(' -__v -_id')
         .lean()
         .exec((err, result) => {
